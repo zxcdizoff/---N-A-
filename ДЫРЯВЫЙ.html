@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ПАНДАЧКА</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            background: repeating-radial-gradient(circle, #ff9999, #99ff99, #9999ff);
+            font-family: 'Arial', sans-serif;
+            overflow-x: hidden;
+        }
+
+        .crazy-title {
+            position: fixed;
+            font-size: 2rem;
+            color: #ff00ff;
+            text-shadow: 2px 2px 4px #00ffff;
+            white-space: nowrap;
+            cursor: pointer;
+            z-index: 1000;
+            transition: transform 0.3s;
+        }
+
+        .crazy-title:hover {
+            transform: scale(1.2) rotate(10deg);
+        }
+
+        .content {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .maks-image {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            border: 5px solid #ff00ff;
+            margin: 20px auto;
+            display: block;
+            transition: transform 0.3s;
+        }
+
+        .maks-image:hover {
+            transform: scale(1.1) rotate(360deg);
+        }
+
+        .fun-fact {
+            background-color: rgba(255, 255, 255, 0.7);
+            border-radius: 10px;
+            padding: 10px;
+            margin: 10px 0;
+            font-size: 1.2rem;
+            color: #0000ff;
+        }
+
+        #confetti-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        .gallery {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 40px;
+        }
+
+        .gallery-item {
+            width: 300px;
+            height: 300px;
+            overflow: hidden;
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .gallery-item:hover {
+            transform: scale(1.05) rotate(5deg);
+        }
+
+        .gallery-item img, .gallery-item video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .gallery-item video {
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1 id="crazy-title-1" class="crazy-title">бамбук</h2>
+    <h2 id="crazy-title-2" class="crazy-title">насвай</h2>
+    <h2 id="crazy-title-3" class="crazy-title">пандочка</h2>
+    <h2 id="crazy-title-4" class="crazy-title">тюрьма></h2>
+    <h2 id="crazy-title-5" class="crazy-title">шконка></h2>
+    
+
+    <canvas id="confetti-canvas"></canvas>
+
+    <div class="content">
+        <img src="photo1.jpg?height=200&width=200" alt="PANDulous" class="maks-image">
+        
+        <div class="fun-fact">Привет, меня зовут Арслан и люблю бамбук и наёбывать людей
+        <div class="fun-fact">Мне нравится кидать бамбук и делать мои зубы зеленее
+        <div class="fun-fact">А еще я люблю маленьких пандочек
+
+        <h2 style="color: #ff00ff; text-shadow: 2px 2px #00ffff;">Моя фотогалерея (я вырос и стал пандой)
+        <div class="gallery">
+            <div class="gallery-item">
+                <img src="photo2.jpg?height=300&width=300" alt="PANDAsomething silly">
+            </div>
+            <div class="gallery-item">
+                <img src="photo3.jpg?height=300&width=300" alt="PANDa party">
+            </div>
+            <div class="gallery-item">
+                <video src="video1.mp4" loop muted>
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+            <div class="gallery-item">
+                <img src="photo4.jpg?height=300&width=300" alt="PANDA friends">
+            </div>
+            <div class="gallery-item">
+                <video src="video2.mp4" loop muted>
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Crazy rotating and moving titles
+        const crazyTitles = document.querySelectorAll('.crazy-title');
+        const titleData = [];
+
+        crazyTitles.forEach((title, index) => {
+            titleData.push({
+                element: title,
+                angle: 0,
+                x: Math.random() * (window.innerWidth - title.offsetWidth),
+                y: Math.random() * (window.innerHeight - title.offsetHeight),
+                dx: (Math.random() - 0.5) * 3,
+                dy: (Math.random() - 0.5) * 3,
+                rotationSpeed: Math.random() * 5 + 5
+            });
+        });
+
+        function animateTitles() {
+            titleData.forEach(data => {
+                data.angle += data.rotationSpeed;
+                data.x += data.dx;
+                data.y += data.dy;
+
+                if (data.x < 0 || data.x > window.innerWidth - data.element.offsetWidth) data.dx = -data.dx;
+                if (data.y < 0 || data.y > window.innerHeight - data.element.offsetHeight) data.dy = -data.dy;
+
+                data.element.style.transform = `translate(${data.x}px, ${data.y}px) rotate(${data.angle}deg)`;
+            });
+            requestAnimationFrame(animateTitles);
+        }
+
+        animateTitles();
+
+        // Confetti explosion
+        const confettiCanvas = document.getElementById('confetti-canvas');
+        const ctx = confettiCanvas.getContext('2d');
+        const confettiPieces = [];
+
+        function resizeCanvas() {
+            confettiCanvas.width = window.innerWidth;
+            confettiCanvas.height = window.innerHeight;
+        }
+
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        function createConfetti(x, y) {
+            for (let i = 0; i < 50; i++) {
+                confettiPieces.push({
+                    x: x,
+                    y: y,
+                    dx: (Math.random() - 0.5) * 10,
+                    dy: Math.random() * -15,
+                    radius: Math.random() * 5 + 5,
+                    color: `hsl(${Math.random() * 360}, 100%, 50%)`,
+                });
+            }
+        }
+
+        function drawConfetti() {
+            ctx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+
+            for (let i = confettiPieces.length - 1; i >= 0; i--) {
+                const piece = confettiPieces[i];
+                ctx.beginPath();
+                ctx.arc(piece.x, piece.y, piece.radius, 0, Math.PI * 2);
+                ctx.fillStyle = piece.color;
+                ctx.fill();
+
+                piece.x += piece.dx;
+                piece.y += piece.dy;
+                piece.dy += 0.2;
+
+                if (piece.y > confettiCanvas.height) {
+                    confettiPieces.splice(i, 1);
+                }
+            }
+
+            requestAnimationFrame(drawConfetti);
+        }
+
+        drawConfetti();
+
+        document.body.addEventListener('click', (e) => {
+            createConfetti(e.clientX, e.clientY);
+        });
+
+        // Make Maks' image interactive
+        const maksImage = document.querySelector('.maks-image');
+        maksImage.addEventListener('click', () => {
+            maksImage.style.transform = `scale(${1 + Math.random()}) rotate(${Math.random() * 360}deg)`;
+            createConfetti(maksImage.offsetLeft + maksImage.width / 2, maksImage.offsetTop + maksImage.height / 2);
+        });
+
+        // Make gallery videos interactive
+        const videos = document.querySelectorAll('.gallery-item video');
+        videos.forEach(video => {
+            video.addEventListener('click', () => {
+                if (video.paused) {
+                    video.play();
+                } else {
+                    video.pause();
+                }
+            });
+            video.addEventListener('mouseenter', () => {
+                video.play();
+            });
+            video.addEventListener('mouseleave', () => {
+                video.pause();
+            });
+        });
+
+        // Make crazy titles interactive
+        crazyTitles.forEach(title => {
+            title.addEventListener('click', () => {
+                title.style.fontSize = `${Math.random() * 3 + 2}rem`;
+                title.style.color = `hsl(${Math.random() * 360}, 100%, 50%)`;
+                createConfetti(title.offsetLeft + title.offsetWidth / 2, title.offsetTop + title.offsetHeight / 2);
+            });
+        });
+    </script>
+</body>
+</html>
